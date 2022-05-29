@@ -59,6 +59,12 @@ variable "sku" {
   default     = "GP_Gen5_2"
 }
 
+variable "public_network_access" {
+  type        = bool
+  description = "Whether or not to allow connections from the internet"
+  default     = false
+}
+
 variable "backup_retention_days" {
   type        = number
   description = "The backup retention period in days"

@@ -23,9 +23,10 @@ resource "azurerm_mariadb_server" "db_server" {
 
   sku_name = var.sku
 
-  storage_mb                   = var.storage
-  backup_retention_days        = var.backup_retention_days
-  geo_redundant_backup_enabled = true
+  storage_mb                    = var.storage
+  backup_retention_days         = var.backup_retention_days
+  geo_redundant_backup_enabled  = true
+  public_network_access_enabled = var.public_network_access
 
   administrator_login          = var.administrator_login
   administrator_login_password = var.password
