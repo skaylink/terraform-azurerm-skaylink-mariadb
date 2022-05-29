@@ -15,14 +15,44 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # For questions and contributions please contact info@iq3cloud.com
-resource "azurerm_resource_group" "resourcegroup" {
-  name     = var.name
-  location = var.location
+
+resource "azurerm_mariadb_server" "db_server" {
+  name                = var.server_name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+
+  sku_name = var.sku
+
+  storage_mb                   = var.storage
+  backup_retention_days        = var.backup_retention_days
+  geo_redundant_backup_enabled = true
+
+  administrator_login          = var.administrator_login
+  administrator_login_password = var.password
+  version                      = "10.3"
+  ssl_enforcement_enabled      = true
+
   tags = {
-    customTag1 = var.customTag1
-    customTag2 = var.customTag2
-    customTag3 = var.customTag3
-    customTag4 = var.customTag4
-    customTag5 = var.customTag5
+    environment = var.environment_name
   }
+}
+
+resource "azurerm_mariadb_database" "db" {
+  for_each = toset(var.databases)
+
+  name                = each.value
+  resource_group_name = data.azurerm_resource_group.rg.name
+  server_name         = azurerm_mariadb_server.db_server.name
+  charset             = "utf8"
+  collation           = "utf8_general_ci"
+}
+
+resource "azurerm_mariadb_firewall_rule" "allow_client_ip" {
+  for_each = var.allowed_client_ip
+
+  name                = each.value.rule_name
+  resource_group_name = data.azurerm_resource_group.rg.name
+  server_name         = azurerm_mariadb_server.db_server.name
+  start_ip_address    = each.value.ip_address
+  end_ip_address      = each.value.ip_address
 }

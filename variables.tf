@@ -16,38 +16,62 @@
 
 # For questions and contributions please contact info@iq3cloud.com
 
-variable "name" {
+variable "resource_group" {
   type        = string
-  description = "The name of the resource group you are deploying"
+  description = "Resource group to deploy server in."
 }
 
-variable "location" {
+variable "server_name" {
   type        = string
-  description = "The location of the resource group, defaults to west Europe"
-  default     = "westeurope"
+  description = "The desired name of the server"
 }
 
-variable "customTag1" {
-  type        = string
-  description = "the first customTag"
+variable "databases" {
+  type        = list(string)
+  description = "The names of the databases to be created"
 }
 
-variable "customTag2" {
+variable "administrator_login" {
   type        = string
-  description = "the second customTag"
+  description = "username of the administrator account"
+  default     = "cspadmin"
 }
 
-variable "customTag3" {
+variable "password" {
   type        = string
-  description = "the third customTag"
+  description = "The password of the administrator user"
 }
 
-variable "customTag4" {
+variable "environment_name" {
   type        = string
-  description = "the fourth customTag"
+  description = "The name of the environment to deploy the instance in, commonly used names are dev, qa and prod."
+  default     = "dev"
 }
 
-variable "customTag5" {
+variable "allowed_client_ip" {
+  type        = map(any)
+  description = "The allowed client IPs"
+}
+
+variable "sku" {
   type        = string
-  description = "the fifth customTag"
+  description = "The mariadb SKU you want to deploy"
+  default     = "GP_Gen5_2"
+}
+
+variable "backup_retention_days" {
+  type        = number
+  description = "The backup retention period in days"
+  default     = 7
+
+  validation {
+    condition     = var.backup_retention_days <= 35
+    error_message = "Variable backup_retention_days must be equal to or below 35 days."
+  }
+}
+
+variable "storage" {
+  type        = string
+  default     = "51200"
+  description = "The amount of storage to provision for the server"
 }

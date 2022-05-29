@@ -15,3 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # For questions and contributions please contact info@iq3cloud.com
+
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group
+}
